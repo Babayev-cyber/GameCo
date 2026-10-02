@@ -1,6 +1,6 @@
 import {mkdir,copyFile,cp} from 'node:fs/promises';
 await mkdir('dist',{recursive:true});
-for(const f of ['surface-game.js','surface-rules.js','surface.css','index.html','style.css','hangar.css','flight.css','launch.css','app.js','config.js','mars.js','glsl.js','combat-effects.js','ships.js','models.js','hangar.js','flight-motion.js','render-quality.js','lighting.js','instruments.js','flight-audio.js','lasers.js','laser-audio.js','rules.js','launch-sequence.js','combat-audio.js','orbital-sky.js','textures.js'])await copyFile(`public/${f}`,`dist/${f}`);
+for(const f of ['surface-game.js','surface-rules.js','surface.css','menu.css','index.html','style.css','hangar.css','flight.css','launch.css','app.js','config.js','mars.js','glsl.js','combat-effects.js','ships.js','models.js','hangar.js','flight-motion.js','render-quality.js','lighting.js','instruments.js','flight-audio.js','lasers.js','laser-audio.js','rules.js','launch-sequence.js','combat-audio.js','orbital-sky.js','textures.js'])await copyFile(`public/${f}`,`dist/${f}`);
 await copyFile('node_modules/three/build/three.module.js','dist/three.js');
 await copyFile('node_modules/three/build/three.core.js','dist/three.core.js');
 await cp('public/assets','dist/assets',{recursive:true});

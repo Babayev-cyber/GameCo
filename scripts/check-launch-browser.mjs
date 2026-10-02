@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {WebSocket} from 'ws';
 import {writeFile,mkdir} from 'node:fs/promises';
+import {LOAD_MS,COUNTDOWN_MS} from '../public/rules.js';
 const tabs=await(await fetch('http://127.0.0.1:9331/json')).json();
 const ws=new WebSocket(tabs.find(t=>t.type==='page').webSocketDebuggerUrl);
 await new Promise(r=>ws.once('open',r));
@@ -38,10 +39,10 @@ try{
  await wait(`${diag}.sound.warningDuration===3`);
  assert.equal(await evaluate(separation),3500);
  await shot('loading');console.log('Loading MP4, starting speech, NASA maps and exactly 3-second warning buffer passed.');
- await wait(`${diag}.phase==='countdown'`);assert.ok(Date.now()-launchTime>=15750);
+ await wait(`${diag}.phase==='countdown'`);assert.ok(Date.now()-launchTime>=LOAD_MS-250);
  assert.ok(await evaluate("!document.getElementById('starting-speech').paused"));
  const count=await evaluate("document.getElementById('launch-number').textContent");assert.ok(/^[1-5]$/.test(count));await shot('countdown');
- await wait(`${diag}.phase==='playing'`);assert.ok(Date.now()-launchTime>=20750);
+ await wait(`${diag}.phase==='playing'`);assert.ok(Date.now()-launchTime>=LOAD_MS+COUNTDOWN_MS-250);
  await wait("document.getElementById('launch-number').textContent==='START'",1500);await shot('start');
  assert.ok(await evaluate("document.getElementById('starting-speech').paused"));
  await delay(1200);await shot('cockpit');

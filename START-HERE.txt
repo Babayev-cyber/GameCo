@@ -90,10 +90,10 @@ Opposing fleets start 3500 m apart. Mouse moves the weapon reticle across the fo
 
 LAUNCH, SKY AND AUDIO UPDATE
 Every launch, including TEST FLIGHT, RESTART TEST and rematches, runs loading.mp4
-for 16 seconds, then a synchronized five-second countdown and START.
+for 17 seconds, then a synchronized five-second countdown and START.
 Startingspeech.mp3 plays from launch through the countdown. SOUND OFF mutes it.
 No pilot can move or shoot before START. If assets are still downloading after
-16 seconds, loading waits for every human pilot to be ready. A missing pilot
+17 seconds, loading waits for every human pilot to be ready. A missing pilot
 cancels multiplayer loading/countdown and returns the remaining pilots to the lobby.
 
 Hull integrity: INTERCEPTOR 170 HP, VANGUARD 240 HP, SENTINEL 320 HP.
@@ -141,7 +141,7 @@ Click the view for continuous mouse look; ESC releases it. Arrow keys can also
 turn/look. Phone controls: left stick, drag the view to look, LASER, AIM, SPRINT.
 
 TEST MARS SURFACE on the flight deck opens a clearly marked solo surface test.
-It uses the normal 16-second loading and five-second countdown, then descent,
+It uses the normal 17-second loading and five-second countdown, then descent,
 so the second part can be tested without winning another space battle.
 All online 4v4/8v8 rooms still require real humans and earn landing through combat.
 Terrain, rocky ridges, dust, landed ships and creature models use local low poly

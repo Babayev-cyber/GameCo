@@ -29,21 +29,23 @@ const motion=new FlightMotion();let lastPhase=null,lastRoster='';
 try{muted=localStorage.getItem('mars-muted')==='1';}catch{}
 if(muted){$('sound').textContent='SOUND OFF';$('sound').setAttribute('aria-pressed','false');}
 const music=$('background-music');
-music.volume=.50;
+music.volume=.40;
+const nightMusic=$('night-music');
+nightMusic.volume=.22;
+const menuMusic=[music,nightMusic];
 const matchMusic=$('match-music');let matchLaunchId=null;
 function syncMusic(){
  launch?.syncSound();if(muted||document.hidden||room?.phase!=='playing'){combatAudio.stop();laserAudio.stop();}
  if(muted||document.hidden||room?.phase!=='playing')flightAudio.silence();
  const inMatch=['loading','countdown','playing','landing','surface'].includes(room?.phase);
- if(muted||document.hidden||inMatch)music.pause();
- else music.play().catch(()=>{});
+ for(const track of menuMusic){if(muted||document.hidden||inMatch)track.pause();else track.play().catch(()=>{});}
  // Match soundtrack: starts from the top when the loading screen opens and loops until the match ends.
  if(!inMatch)matchLaunchId=null;else if(room.launchId!==matchLaunchId){matchLaunchId=room.launchId;matchMusic.currentTime=0;}
- matchMusic.volume=['playing','surface'].includes(room?.phase)?.45:.3;
+ matchMusic.volume=['playing','surface'].includes(room?.phase)?.45:.24;
  if(muted||document.hidden||!inMatch)matchMusic.pause();else matchMusic.play().catch(()=>{});
 }
 document.addEventListener('visibilitychange',syncMusic);
-music.addEventListener('error',()=>toast('Background music could not load. Please refresh.'));
+for(const track of menuMusic)track.addEventListener('error',()=>toast('Background music could not load. Please refresh.'));
 function toast(m){$('toast').textContent=m;$('toast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').style.display='none',4500);}
 function transmit(m){if(socket?.readyState!==1)return toast('Server unavailable. Configure a multiplayer server to launch.');socket.send(JSON.stringify(m));}
 function reset(){$('marswalk').hidden=false;if(!matchMedia('(prefers-reduced-motion: reduce)').matches)$('marswalk').play().catch(()=>{});room=null;lastPhase=null;motion.clear();aimCursor.x=aimCursor.y=0;mouseFire=false;mouseRocket=false;previousHull=null;surface?.reset();launch?.reset();combatAudio.stop();effects.clear();lasers.clear();for(const model of ships.values()){scene.remove(model);disposeShip(model);}ships.clear();syncMusic();myId=null;keys.clear();document.body.classList.remove('playing','boosting');for(const id of ['lobby','hud','result'])$(id).classList.add('hidden');$('menu').classList.remove('hidden');cockpit.visible=false;$('target').classList.add('hidden');}
@@ -57,7 +59,7 @@ $('retry').onclick=()=>{keys.clear();mouseFire=false;mouseRocket=false;previousH
 $('surface-practice').onclick=()=>transmit({type:'practice',mission:'surface',name:$('name').value.trim()||'Pilot',ship});$('practice').onclick=()=>join('practice');$('restart').onclick=()=>transmit({type:'restart'});
 $('create').onclick=()=>join('create');$('join').onclick=()=>join('join');$('code').onkeydown=e=>{if(e.key==='Enter')join('join');};$('start').onclick=()=>transmit({type:'start'});$('rematch').onclick=()=>transmit({type:'rematch'});document.querySelectorAll('.leave').forEach(b=>b.onclick=()=>{transmit({type:'leave'});reset();});
 $('copy').onclick=async()=>{try{await navigator.clipboard.writeText(room.code);toast('Room code copied.');}catch{toast(`Room code: ${room.code}`);}};
-function unlockAudio(){if(muted)return;audio??=new AudioContext();audio.resume().then(()=>combatAudio.prepare()).catch(()=>{});laserAudio.prepare();syncMusic();if(!music.paused&&audio.state==='running')for(const ev of ['pointerdown','keydown','touchstart'])removeEventListener(ev,unlockAudio);}
+function unlockAudio(){if(muted)return;audio??=new AudioContext();audio.resume().then(()=>combatAudio.prepare()).catch(()=>{});laserAudio.prepare();syncMusic();if(menuMusic.every(track=>!track.paused)&&audio.state==='running')for(const ev of ['pointerdown','keydown','touchstart'])removeEventListener(ev,unlockAudio);}
 for(const ev of ['pointerdown','keydown','touchstart'])addEventListener(ev,unlockAudio,{passive:true});
 syncMusic();
 $('sound').onclick=()=>{muted=!muted;try{localStorage.setItem('mars-muted',muted?'1':'0');}catch{}$('sound').textContent=muted?'SOUND OFF':'SOUND ON';$('sound').setAttribute('aria-pressed',String(!muted));syncMusic();if(!muted)unlockAudio();};

@@ -2,7 +2,7 @@ import {LOAD_MS} from './rules.js';
 export function createLaunchSequence({assetsReady,onReady,isMuted}){
  const el=document.getElementById('launch-sequence'),video=document.getElementById('loading-video'),speech=document.getElementById('starting-speech'),number=document.getElementById('launch-number'),label=document.getElementById('launch-label'),detail=document.getElementById('launch-detail'),bar=document.getElementById('launch-progress'),track=bar.parentElement;
  let state,myId,launchId,readySent=false,offset=0,lastPhase,startedUntil=0;
- speech.volume=.95;speech.loop=true;
+ speech.volume=.76;speech.loop=true;
  function setSpeech(){if(!state||isMuted()||document.hidden||!['loading','countdown'].includes(state.phase)){speech.pause();return;}speech.play().catch(()=>{});}
  function update(m,id){
   state=m;myId=id;offset=m.serverTime-Date.now();

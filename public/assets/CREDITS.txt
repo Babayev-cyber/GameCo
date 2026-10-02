@@ -17,7 +17,8 @@ Bundled as jupiter.webp, downloaded 2026-10-02.
 Planet positions and apparent sizes are chosen for the game, rather than solar system scale.
 
 User-provided media: background.mp3, marswalk.mp4, Startingspeech.mp3,
-warning.mp3, explosion.mp3, lasergun.mp3 and loading.mp4.
+warning.mp3, explosion.mp3, lasergun.mp3, Darkisthenight.mp3, genericmusic.mp3
+and loading.mp4.
 The loading cinematic is resized from 4K to 1280 x 720 and encoded to H.264 MP4
 at a target 1.4 Mbps using Chrome MediaRecorder. Original upload is unchanged.
 Other user audio/video files are bundled unchanged; warning.mp3 playback uses
