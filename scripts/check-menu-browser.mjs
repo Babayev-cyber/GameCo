@@ -39,13 +39,27 @@ try {
     document.getElementById('create').click();
     await new Promise(resolve=>setTimeout(resolve,800));
     const lobbyVisible=!document.getElementById('lobby').classList.contains('hidden');
-    const rosterCanScroll=getComputedStyle(document.body).overflowY!=='hidden';
+    const pageLocked=['hidden','clip'].includes(getComputedStyle(document.documentElement).overflowY)&&['hidden','clip'].includes(getComputedStyle(document.body).overflowY);
     document.querySelector('#lobby .leave').click();
     await new Promise(resolve=>setTimeout(resolve,400));
-    return {lobbyVisible,rosterCanScroll,menuRestored:!document.getElementById('menu').classList.contains('hidden'),pageHeight:document.documentElement.scrollHeight,height:innerHeight};
+    return {lobbyVisible,pageLocked,menuRestored:!document.getElementById('menu').classList.contains('hidden'),pageHeight:document.documentElement.scrollHeight,height:innerHeight};
   })()`});
   const flow=lobbyCheck.result.value;
   console.log(JSON.stringify({roomFlow:flow}));
-  if(!flow?.lobbyVisible||!flow.rosterCanScroll||!flow.menuRestored||flow.pageHeight!==flow.height)failures++;
+  if(!flow?.lobbyVisible||!flow.pageLocked||!flow.menuRestored||flow.pageHeight!==flow.height)failures++;
+  // Exercise the maximum roster even when no other clients are connected.
+  await call('Runtime.evaluate',{expression:`document.getElementById('menu').classList.add('hidden');document.getElementById('lobby').classList.remove('hidden');document.getElementById('roster').innerHTML=Array.from({length:16},(_,i)=>'<div class="pilot"><b>PILOT '+i+'</b><span>ARES / INTERCEPTOR</span></div>').join('')`});
+  for(const [width,height] of [[1366,768],[390,844],[320,568],[568,320]]) {
+    await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:width<900});
+    await call('Input.dispatchMouseEvent',{type:'mouseWheel',x:width/2,y:height/2,deltaX:0,deltaY:500});
+    const {result}=await call('Runtime.evaluate',{returnByValue:true,expression:`(() => {
+      window.scrollTo(0,500);document.body.scrollTop=500;
+      const outside=[...document.querySelectorAll('#lobby button,#roster .pilot')].filter(el=>{const r=el.getBoundingClientRect();return r.top<0||r.bottom>innerHeight||r.left<0||r.right>innerWidth;});
+      return {width:innerWidth,height:innerHeight,outside:outside.length,scrollY,bodyScroll:document.body.scrollTop,pageHeight:document.documentElement.scrollHeight};
+    })()`});
+    const m=result.value;console.log(JSON.stringify({fullLobby:m}));
+    if(m.outside||m.scrollY||m.bodyScroll||m.pageHeight!==height)failures++;
+  }
+  await call('Page.navigate',{url:process.env.MARS_TEST_URL||'http://localhost:3001/'});
 } finally { ws.close(); }
 if(failures)throw Error(`${failures} menu viewport checks failed`);

@@ -20,6 +20,18 @@ import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
 const $=id=>document.getElementById(id);
+function showMenuStep(step){
+ $('lets-play').classList.toggle('hidden',step!=='start');
+ $('choose-team').classList.toggle('hidden',step!=='team');
+ $('choose-team').setAttribute('aria-expanded',String(step==='panel'));
+ $('team-panel').classList.toggle('hidden',step!=='panel');
+ document.querySelector('.menu-entry').classList.toggle('hidden',step==='panel');
+ $('menu').classList.toggle('menu-landing',step!=='panel');
+}
+$('menu').classList.add('menu-landing');
+$('lets-play').onclick=()=>{showMenuStep('team');$('choose-team').focus();};
+$('choose-team').onclick=()=>{showMenuStep('panel');$('name').focus();};
+$('menu-back').onclick=()=>{showMenuStep('start');$('lets-play').focus();};
 function uiText(id,value){const node=$(id),text=String(value);if(node.textContent!==text)node.textContent=text;}
 let ship='interceptor',size=4,myId,room,socket,muted=false,audio,toastTimer;
 const flightAudio=createFlightAudio(()=>audio,()=>muted),laserAudio=createLaserAudio(()=>audio,()=>muted);
@@ -48,7 +60,7 @@ document.addEventListener('visibilitychange',syncMusic);
 for(const track of menuMusic)track.addEventListener('error',()=>toast('Background music could not load. Please refresh.'));
 function toast(m){$('toast').textContent=m;$('toast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').style.display='none',4500);}
 function transmit(m){if(socket?.readyState!==1)return toast('Server unavailable. Configure a multiplayer server to launch.');socket.send(JSON.stringify(m));}
-function reset(){$('marswalk').hidden=false;if(!matchMedia('(prefers-reduced-motion: reduce)').matches)$('marswalk').play().catch(()=>{});room=null;lastPhase=null;motion.clear();aimCursor.x=aimCursor.y=0;mouseFire=false;mouseRocket=false;previousHull=null;surface?.reset();launch?.reset();combatAudio.stop();effects.clear();lasers.clear();for(const model of ships.values()){scene.remove(model);disposeShip(model);}ships.clear();syncMusic();myId=null;keys.clear();document.body.classList.remove('playing','boosting');for(const id of ['lobby','hud','result'])$(id).classList.add('hidden');$('menu').classList.remove('hidden');cockpit.visible=false;$('target').classList.add('hidden');}
+function reset(){showMenuStep('start');$('marswalk').hidden=false;if(!matchMedia('(prefers-reduced-motion: reduce)').matches)$('marswalk').play().catch(()=>{});room=null;lastPhase=null;motion.clear();aimCursor.x=aimCursor.y=0;mouseFire=false;mouseRocket=false;previousHull=null;surface?.reset();launch?.reset();combatAudio.stop();effects.clear();lasers.clear();for(const model of ships.values()){scene.remove(model);disposeShip(model);}ships.clear();syncMusic();myId=null;keys.clear();document.body.classList.remove('playing','boosting');for(const id of ['lobby','hud','result'])$(id).classList.add('hidden');$('menu').classList.remove('hidden');cockpit.visible=false;$('target').classList.add('hidden');}
 function connect(){if(location.hostname.endsWith('github.io')&&!window.GAME_SERVER_URL){$('connection').textContent='SERVER NOT CONFIGURED';return;}socket=new WebSocket(window.GAME_SERVER_URL||`${location.protocol==='https:'?'wss:':'ws:'}//${location.host}`);socket.onopen=()=>{$('connection').textContent='NETWORK ONLINE';};socket.onclose=()=>{$('connection').textContent='OFFLINE';if(room){reset();toast('Connection lost. Rejoin your room after reconnecting.');}setTimeout(connect,3000);};socket.onerror=()=>{};socket.onmessage=e=>{const m=JSON.parse(e.data);if(m.type==='error')return toast(m.message);if(m.type==='joined'){myId=m.id;return;}if(m.type==='state'){room=m;motion.push(m.players,performance.now());launch.update(m,myId);updateUI();surface.sync(m,myId);for(const shot of m.shots)laser(shot);effects.sync(m.phase==='playing'?(m.missiles||[]):[]);for(const boom of m.booms||[]){effects.burst(boom.pos,true);if(boom.kind==='missile')combatAudio.explosion(camera.position.distanceTo(new THREE.Vector3(...boom.pos)));}
  const me=m.players.find(p=>p.id===myId),incoming=m.phase==='playing'&&!me?.dead&&(m.missiles||[]).some(rocket=>rocket.target===myId&&rocket.team!==me?.team);
  $('missile-warning').classList.toggle('hidden',!incoming);combatAudio.warning(incoming);}};}
