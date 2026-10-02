@@ -1,0 +1,34 @@
+/* Flight HUD: restrained glass, clear telemetry and a clean weapons sight. */
+.playing #space{background:#020409}
+.playing .match-bar{top:20px;background:#07121bb5;border-color:#99bec72a;border-radius:2px;padding:12px 28px;font-variant-numeric:tabular-nums;box-shadow:0 4px 22px #0004}
+.playing .objective{top:78px;color:#9eafb7;letter-spacing:2.5px}
+.playing .objective span{color:#d3a181}
+.playing .reticle{width:22px;height:22px;font-size:0;will-change:left,top;color:#a8e0dc}
+.playing .reticle:before{inset:-5px;border:1px solid #94d5d85c;border-radius:50%;box-shadow:0 0 12px #76cad515}
+.playing .reticle:after{content:'';position:absolute;inset:5px;background:linear-gradient(currentColor,currentColor) center/1px 12px no-repeat,linear-gradient(currentColor,currentColor) center/12px 1px no-repeat}
+.playing .reticle small{top:39px;font:9px Barlow,Arial,sans-serif;letter-spacing:1px;color:#95b3bb}
+.playing .reticle.locked:before{border-color:#91ddba;border-radius:3px}
+.playing .reticle.acquiring:before{border-color:#d5af77}
+.playing .target>span{display:block;width:30px;height:30px;font-size:0;border:1px solid #df9b6770;border-radius:2px;background:linear-gradient(#e7ab7c,#e7ab7c) top left/7px 1px no-repeat,linear-gradient(#e7ab7c,#e7ab7c) bottom right/7px 1px no-repeat}
+.playing .target small{bottom:38px;background:#07121b9c;color:#e9b68e;padding:5px 8px;border-left:1px solid #be8d6370;font-variant-numeric:tabular-nums}
+.playing .practice-info{background:#07121b99;border-color:#8eb7c066;color:#a2c4cc;box-shadow:0 4px 18px #0002}
+.playing #speed-readout{bottom:145px;left:30px;transform:none;color:#afcdd5;letter-spacing:1.4px;font-size:11px;font-variant-numeric:tabular-nums}
+.playing #rocket-status{bottom:145px;right:30px;left:auto;transform:none;color:#d9b18a;letter-spacing:1px}
+.playing .telemetry{bottom:100px;left:30px;transform:none;gap:20px;color:#a4c6cb;font-variant-numeric:tabular-nums}
+.playing .help{bottom:17px;color:#8da0ac;font-size:10px}
+.playing #speed-lines i{height:1px;filter:none;background:linear-gradient(90deg,transparent,#bce2f1a0)}
+.playing.boosting #speed-lines{opacity:.4}
+.playing #damage-flash.hit{animation:flight-damage .35s ease-out}
+@keyframes flight-damage{from{background:radial-gradient(ellipse at center,transparent 55%,#db583535)}to{opacity:0}}
+@media(max-width:760px){
+ .playing .match-bar{top:15px;padding:10px 16px;gap:8px}
+ .playing .objective{top:66px;font-size:8px;letter-spacing:1px}
+ .playing .objective span{font-size:9px;letter-spacing:1px}
+ .playing .practice-info{top:116px;font-size:7px;padding:8px}
+ .playing #speed-readout{left:12px;bottom:158px;font-size:9px}
+ .playing #rocket-status{right:12px;bottom:182px;font-size:8px;max-width:180px;text-align:right}
+ .playing .telemetry{left:50%;bottom:126px;transform:translateX(-50%);font-size:8px;gap:12px}
+ .playing .target small{font-size:8px;padding:4px;max-width:240px;overflow:hidden;text-overflow:ellipsis}
+ .playing .reticle small{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){.playing #damage-flash.hit{animation:none}.playing .reticle{transition:none}}

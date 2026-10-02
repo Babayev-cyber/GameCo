@@ -1,0 +1,12 @@
+import {mkdir,copyFile,cp} from 'node:fs/promises';
+await mkdir('dist',{recursive:true});
+for(const f of ['surface-game.js','surface-rules.js','surface.css','index.html','style.css','hangar.css','flight.css','launch.css','app.js','config.js','mars.js','glsl.js','combat-effects.js','ships.js','models.js','hangar.js','flight-motion.js','render-quality.js','lighting.js','instruments.js','flight-audio.js','lasers.js','laser-audio.js','rules.js','launch-sequence.js','combat-audio.js','orbital-sky.js','textures.js'])await copyFile(`public/${f}`,`dist/${f}`);
+await copyFile('node_modules/three/build/three.module.js','dist/three.js');
+await copyFile('node_modules/three/build/three.core.js','dist/three.core.js');
+await cp('public/assets','dist/assets',{recursive:true});
+await mkdir('dist/addons/loaders',{recursive:true});
+await mkdir('dist/addons/utils',{recursive:true});
+await copyFile('node_modules/three/examples/jsm/loaders/GLTFLoader.js','dist/addons/loaders/GLTFLoader.js');
+await copyFile('node_modules/three/examples/jsm/utils/BufferGeometryUtils.js','dist/addons/utils/BufferGeometryUtils.js');
+for(const dir of ['postprocessing','shaders'])await cp('node_modules/three/examples/jsm/'+dir,'dist/addons/'+dir,{recursive:true});
+console.log('GitHub Pages files ready in dist/');

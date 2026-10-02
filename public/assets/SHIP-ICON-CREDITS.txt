@@ -1,0 +1,13 @@
+Spacecraft selection icons by Delapouite (https://delapouite.com/), Game-icons.net.
+License: Creative Commons Attribution 3.0 Unported
+https://creativecommons.org/licenses/by/3.0/
+
+INTERCEPTOR: Interceptor ship
+https://game-icons.net/1x1/delapouite/interceptor-ship.html
+VANGUARD: Starfighter
+https://game-icons.net/1x1/delapouite/starfighter.html
+SENTINEL: Spaceship
+https://game-icons.net/1x1/delapouite/spaceship.html
+
+Changes: replaced white fill with metallic color gradients; added a thin outline.
+The website adds display sizing, a background grid, and selection glow.

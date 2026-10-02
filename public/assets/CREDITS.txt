@@ -1,0 +1,28 @@
+Mars surface map: NASA / Jet Propulsion Laboratory & Caltech.
+Viking images processed at the USGS; JPL/Caltech planetary map database.
+Source: https://science.nasa.gov/3d-resources/mars/
+Original: https://assets.science.nasa.gov/content/dam/science/cds/3d/resources/image/mars/Mars.jpg
+Downloaded 2026-10-01. Bundled unchanged as mars-viking.jpg (972896 bytes).
+The game uses artistic lighting and scale; it is not a scientific simulation.
+
+Earth map: Caltech/JPL and USGS planetary map database.
+Source: https://space.jpl.nasa.gov/tmaps/earth.html
+Original: https://space.jpl.nasa.gov/tmaps/pix/ear0xuu2.jpg
+Bundled as earth.jpg, downloaded 2026-10-02.
+
+Jupiter map: NASA/JPL-Caltech, Voyager imagery.
+Source: https://science.nasa.gov/3d-resources/jupiter/
+Original: https://assets.science.nasa.gov/dynamicimage/assets/science/cds/3d/resources/image/jupiter/preview.webp?w=2048
+Bundled as jupiter.webp, downloaded 2026-10-02.
+Planet positions and apparent sizes are chosen for the game, rather than solar system scale.
+
+User-provided media: background.mp3, marswalk.mp4, Startingspeech.mp3,
+warning.mp3, explosion.mp3, lasergun.mp3 and loading.mp4.
+The loading cinematic is resized from 4K to 1280 x 720 and encoded to H.264 MP4
+at a target 1.4 Mbps using Chrome MediaRecorder. Original upload is unchanged.
+Other user audio/video files are bundled unchanged; warning.mp3 playback uses
+only its first three seconds, copied into an AudioBuffer at runtime.
+
+User-provided gunlowpoly.glb is bundled unchanged under assets/models/.
+Its geometry is merged, normalized and placed in the soldier view at runtime.
+Spacesuit hands, surface terrain, rocks, ridges and creature geometry are procedural.

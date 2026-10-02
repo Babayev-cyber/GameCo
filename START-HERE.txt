@@ -1,0 +1,150 @@
+OCUUPATION OF MARS — 3D multiplayer prototype
+
+Bu qovluğun İÇİNDƏKİ faylları ayrıca GitHub reposunun kökünə yüklə.
+Digər çatın faylları ilə qarışmaması üçün versiya mars-3d içindədir.
+
+LOKAL İŞƏ SALMA
+1. Node.js 24 quraşdır.
+2. Bu qovluqda terminal aç:
+   npm install
+   npm start
+3. http://localhost:3001 ünvanına daxil ol.
+4. Create a room seç. İkinci brauzer pəncərəsində həmin kodla qoşul.
+   Eyni Wi-Fi-da telefon üçün kompüterin lokal IP-si ilə :3001 aç.
+   Windows firewall soruşsa yalnız özəl şəbəkə üçün Node-a icazə ver.
+
+GITHUB PAGES + MULTIPLAYER
+GitHub Pages yalnız statik faylları yayımlayır. Multiplayer Node serveri
+ayrıca işləməlidir. Server bütün oyunu da təkbaşına yayımlaya bilər.
+
+1. Qovluğun məzmununu (.github daxil) GitHub reposunun main branch-inə yüklə.
+2. Render-də həmin repodan Node Web Service yarat (render.yaml hazırdır).
+   Build command: npm ci
+   Start command: npm start
+   Health check: /health
+   Serverin HTTPS ünvanını götür.
+3. public/config.js içində GAME_SERVER_URL dəyərini dəyiş:
+   window.GAME_SERVER_URL = 'wss://SENIN-SERVERIN.onrender.com';
+4. GitHub > Settings > Pages > Source: GitHub Actions seç.
+5. Dəyişikliyi main-ə push et. Publish Mars 3D workflow saytı yayımlayacaq.
+   Link adətən https://USERNAME.github.io/REPO/ formasındadır.
+
+MANUAL BUILD
+npm run build — hazır statik fayllar dist/ qovluğunda yaranır.
+npm test — multiplayer inteqrasiya testlərini işlədir.
+
+OYUN
+4v4: maksimum 8 pilot. 8v8: maksimum 16 pilot. Komandalar avtomatik bölünür.
+Üç gəminin sürəti və zirehi fərqlidir. 4v4 üçün 8, 8v8 üçün 16 real oyunçu lazımdır. Tək məşq yalnız TEST FLIGHT ilədir.
+W/S: irəli/geri. A/D: dönmə. Ox yuxarı/aşağı: qalxma/enmə.
+Shift: tək basanda da irəli boost. Siçan: sərbəst nişan. Space və ya sol klik: lazer. Telefonda ekran düymələrindən istifadə et.
+HUD-da CAPTURE ZONE məsafəsini izlə. Mərkəzin 145 metri daxilində rəqib yoxdursa xal toplanır.
+100 xala çatan və ya 5 dəqiqənin sonunda daha çox xalı olan komanda qalibdir.
+Məhv olanda GAME OVER görünür; geri qayıtmaq üçün düyməyə bas. Host rematch başlada bilər.
+
+HAZIRKI HƏDD
+Bu ilkin oynanıla bilən prototipdir. Kokpit yüklədiyin GLB modelini və canlı cihaz panellərini istifadə edir; Mars NASA/JPL/Caltech Viking səth xəritəsini istifadə edir;
+istinad şəklindəki fotoreal detal səviyyəsinə hələ çatmır. Real orbital fizika,
+səsli çat və hesab yaddaşı yoxdur. 1v1 test üçün KEPLER botu mövcuddur. Otaqlar RAM-da saxlanır; server
+yenidən başlasa silinir. Tək server instansı istifadə et. Ucuz/free hosting
+yuxuya gedə bilər. Telefon performansı cihazdan asılıdır, real cihazlarda
+geniş test hələ aparılmayıb. Sayt bu paket hazırlanarkən yayımlanmayıb.
+
+Rəsmi yerləşdirmə sənədləri:
+https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site
+https://render.com/docs/websocket
+
+1v1 TEST FLIGHT
+Gəmini seç və TEST FLIGHT düyməsinə bas. 16 saniyə yüklənmə və 5 saniyə geri sayımdan sonra KEPLER botu ilə 1v1 başlayır.
+Bot hərəkət edir, nişan alır və fasilələrlə atəş açır. Məhv olduqda 4 saniyəyə qayıdır.
+RESTART TEST xal, sağlamlıq və mövqeləri sıfırlayır. Botun nişanı onun yerini göstərir.
+Mars səth xəritəsinin mənbəsi və krediti: public/assets/CREDITS.txt.
+
+WEAPONS: Hold LEFT CLICK or SPACE for lasers. Press R or RIGHT CLICK for a guided rocket (6-second cooldown). Touch controls have LASER and ROCKET buttons. Keep the aim on an enemy within 1500 m for 0.65 seconds; launch when TARGET LOCKED appears. The large orbit rings have been removed; capture distance remains in the HUD.
+
+GAME OVER: Human pilots no longer respawn automatically. TRY AGAIN restarts a practice match. In multiplayer, REDEPLOY becomes available after four seconds. Bots still respawn automatically.
+Visual update: removed the foreground moons and beacon, added three detailed procedural ship models, deployable rocket fins, rocket acceleration and trails, muzzle flashes and larger explosions.
+
+REALISM AND PERFORMANCE UPDATE
+Mars uses the NASA photographic surface, restrained daylight and a thinner atmosphere.
+Exterior ships have beveled hulls, panel seams, metal reflections and throttle-dependent exhaust.
+The uploaded cockpit has working speed, heading, radar, hull and weapon displays.
+The cockpit shell stays imported; decorative paper, markers and floating glyphs are hidden at runtime.
+Drive vibration and rocket launch audio respect SOUND OFF and pause when the page is hidden.
+Acceleration and braking are gradual. Remote ships interpolate between network snapshots;
+the local view briefly predicts movement, including smooth yaw and pitch.
+Rendering resolution adjusts to slow frames. Covered menu rendering pauses, the hangar
+renders at up to 30 FPS, ship buffers are shared, and lasers/particles use bounded pools.
+The five-minute timer uses wall-clock time. Missile steering is independent of tick duration.
+See PERFORMANCE.txt for measurements and their limits. A fixed FPS on every device or
+connection cannot be guaranteed; no physical-phone performance claim is made.
+
+UPLOADED GLB ASSETS
+The four user-provided GLBs are bundled under public/assets/models/. The cockpit is used for the pilot view; the two missile GLBs are used by opposing teams; sparksexplosion.glb augments impacts. Models load once and share geometry. Camera placement and some overly bright decorative cockpit layers are adjusted at runtime. Original GLB files are unchanged.
+The flight deck shows the same procedural exterior models used in combat, with drag-to-rotate preview and a separate imported COCKPIT preview. No exterior spacecraft GLB was present among the uploads.
+
+
+FLIGHT CONTROLS UPDATE
+Opposing fleets start 3500 m apart. Mouse moves the weapon reticle across the forward view; A/D and arrow keys still steer the spacecraft. Shift alone accelerates forward at 2.4x cruise speed. Edge streaks, wider field of view, and the speed readout indicate boost. W/S control normal forward/reverse thrust. R/right-click only launches after a server-confirmed target lock. Moving aim off target loses the lock before firing; an already launched missile retains its target.
+4v4 and 8v8 require 8 or 16 connected human players; the host cannot bypass this check. No bots fill multiplayer slots. Only TEST FLIGHT contains KEPLER.
+
+LAUNCH, SKY AND AUDIO UPDATE
+Every launch, including TEST FLIGHT, RESTART TEST and rematches, runs loading.mp4
+for 16 seconds, then a synchronized five-second countdown and START.
+Startingspeech.mp3 plays from launch through the countdown. SOUND OFF mutes it.
+No pilot can move or shoot before START. If assets are still downloading after
+16 seconds, loading waits for every human pilot to be ready. A missing pilot
+cancels multiplayer loading/countdown and returns the remaining pilots to the lobby.
+
+Hull integrity: INTERCEPTOR 170 HP, VANGUARD 240 HP, SENTINEL 320 HP.
+The 3500 m separation gives even two interceptors boosting toward each other
+more than five seconds before they can enter the 900 m laser range.
+Rockets require a 0.65-second aim lock within 1500 m, retain that target in flight,
+accelerate from the launch rail and have an eight-second lifetime.
+
+Laser shots use lasergun.mp3. Missile detonations use explosion.mp3.
+An enemy missile targeting your pilot triggers the visible MISSILE INBOUND alert
+and repeats only the first three seconds of warning.mp3 until the threat is gone.
+Mute, leaving the match and hiding the tab stop the warning sound.
+The cockpit eye position and field of view now leave more of the canopy open.
+Stars, a faint galactic band, Earth and Jupiter use a small number of extra draws;
+Earth/Jupiter textures and credits are included in public/assets/CREDITS.txt.
+Red laser bolts have an illuminated core, travelling pulse, corona, impact flare
+and brief hull lighting. Bloom runs during laser effects on suitable desktop
+resolution; phones and reduced resolution use the direct renderer.
+The loading cinematic is a 1280 x 720 H.264 MP4 (about 2.4 MB), reduced from the
+29 MB 4K upload. The original upload is unchanged. Initial downloads depend
+on the connection; browsers cache the smaller copy for later launches.
+
+PART II: MARS SURFACE
+Destroy every ship in the opposing fleet at the same time to unlock landing.
+The server checks this condition, stops orbital combat and starts a 6.5-second
+descent. The winning human team deploys together with 120 suit health each.
+The losing team spectates. A bot victory in solo flight leaves GAME OVER visible.
+The original orbital capture/time limit still ends a match; a full fleet defeat
+is the route into the second mission.
+
+Clear three waves of Martian creatures. Scouts have 60 HP, stalkers 144 HP,
+and brutes 336 HP, with different sizes, movement speeds and attack damage.
+Waves scale with squad size. Monsters approach around rocks and attack nearby
+soldiers. The server controls movement, shots, creature health and wave progress.
+Boulders and terrain block laser shots. A squad wipe or the eight-minute surface
+limit fails the mission. Living squad members can fight on while a fallen teammate
+waits four seconds to redeploy; if everyone dies, the operation must be replayed.
+
+The first-person rifle is the uploaded gunlowpoly.glb, bundled unchanged, with
+procedural spacesuit sleeves and gloves. Its meshes are merged at runtime for
+one rifle draw. It fires the same red laser shader and lasergun.mp3 as the ships.
+WASD: walk/strafe. SHIFT: sprint. LEFT CLICK / SPACE: fire. Hold RIGHT CLICK:
+aim down the sights with a narrower field of view and lower mouse sensitivity.
+Click the view for continuous mouse look; ESC releases it. Arrow keys can also
+turn/look. Phone controls: left stick, drag the view to look, LASER, AIM, SPRINT.
+
+TEST MARS SURFACE on the flight deck opens a clearly marked solo surface test.
+It uses the normal 16-second loading and five-second countdown, then descent,
+so the second part can be tested without winning another space battle.
+All online 4v4/8v8 rooms still require real humans and earn landing through combat.
+Terrain, rocky ridges, dust, landed ships and creature models use local low poly
+geometry. Rocks and ridges use instancing; the game reuses its existing renderer.
+Surface shaders prepare while the launch assets load.
+Browser check: node scripts/check-surface-browser.mjs (Chrome CDP on port 9331).

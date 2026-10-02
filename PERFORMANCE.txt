@@ -1,0 +1,63 @@
+Occupation of Mars - orbital rendering check before the surface mission, 2026-10-02
+
+Method: headless Chrome on this computer, 1440 x 1050, 6-second samples.
+The previous ZIP was run separately with the same test script. The fleet test uses
+16 actual WebSocket clients; production rooms still require 8 or 16 human pilots.
+The frame counter measures browser animation callbacks, not physical display refresh.
+These short samples are comparisons, not guarantees of FPS or real-phone performance.
+
+                         Previous ZIP       Updated
+Menu callback rate       57.2 / second      143.0 / second
+Menu draw calls          1,943 / second     259 / second
+1v1 callback rate        55.5 / second      113.6 / second
+1v1 95th-percentile gap   27.7 ms            20.8 ms
+16-client callback rate  123.4 / second     116.8 / second
+16-client draw calls     48,307 / second    23,139 / second
+16-client p95 gap        13.9 ms            20.8 ms
+
+The menu and solo test improved. Fleet rendering roughly halved its average draw
+calls per frame while adding instruments and reflection detail; its frame pacing
+was slower in this sample. Occasional slow frames remain. The updated solo test
+automatically reduced pixel ratio to 0.85; the fleet ended at 1.0.
+
+Changes:
+- Fighters draw as seven batches and share geometry between instances.
+- Planetary turbulence is baked once rather than evaluated for each pixel.
+- Cockpit displays use small textures with staggered updates.
+- Hidden/covered renderers stop; hangar preview is capped at 30 FPS.
+- Laser beams, sparks and flashes reuse bounded pools.
+- Ship poses interpolate, local movement predicts briefly, and camera turns smooth.
+- Adaptive resolution considers average frame duration and repeated slow frames.
+
+Validation: six automated movement, targeting and multiplayer tests; desktop and
+390 x 844 mobile browser emulation; laser, boost, rocket, death/retry and model loading.
+
+To repeat (game on localhost:3001, Chrome CDP on 9331):
+node scripts/benchmark-browser.mjs comparison
+node scripts/check-browser.js
+JSON reports and screenshots go into test-results/ (excluded from deployment).
+
+SURFACE MISSION SAMPLE, 2026-10-02
+Production dist/ served locally. Headless Chrome, 1440 x 1050, six-second sample
+on this computer, first surface wave with three monsters and one player.
+Animation callback rate: 123 / second. 95th-percentile callback gap: 13.9 ms.
+Average draw calls: 32 / frame. No sampled callback gaps exceeded 33.4 ms.
+Pixel ratio: 1.0. Rendered triangles at the end of the sample: 41,532.
+These are browser callback measurements, not physical display refresh or a
+guarantee of frame rate. Larger squads/waves and physical phones were not benchmarked.
+
+Surface changes: one shared renderer, instanced rocks/ridges, shared creature
+geometry, a rifle merged to one draw, bounded laser effects and shaders prepared
+before launch readiness. The 4K loading upload was encoded to a 2.4 MB 720p MP4.
+
+Validation: all eleven initial server tests passed, plus the added monster rock
+navigation test. Desktop/mobile surface checks covered descent, gun loading,
+sprint, right-click aim, server damage, recorded laser audio and phone AIM controls.
+No browser/shader errors occurred in the surface check. Orbital launch/audio/death
+checks passed before adding the surface mission; the updated server integration
+test also verifies that a practice victory enters landing and the first wave.
+
+To repeat the surface sample:
+MARS_TEST_URL=http://localhost:3001 node scripts/benchmark-surface.mjs
+For PowerShell: $env:MARS_TEST_URL='http://localhost:3001'; node scripts/benchmark-surface.mjs
+Report: test-results/performance-surface.json (excluded from deployment).
